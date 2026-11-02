@@ -16,7 +16,7 @@
       --color-ok: #2f7d4f;          /* succès              */
     }
 
-    /* -------- 2. États ajoutés / retirés par JavaScript (classList) ------- */
+    /* -------- 2. États ajoutés / retirés par JavaScript (classList) -------  */
     .erreur input   { border-color: var(--color-alert); }
     .erreur .message { color: var(--color-alert); }
     .valide input   { border-color: var(--color-ok); }
