@@ -49,7 +49,7 @@
             <p class="text-sm text-muted">Séance du jour</p>
             <h1 class="font-serif text-3xl md:text-4xl">Faire l'appel</h1>
           </div>
-          <p id="compteur" class="rounded-full bg-card px-3 py-1 text-sm text-muted ring-1 ring-line" aria-live="polite">15 élèves</p>
+          <p id="compteur" class="rounded-full bg-card px-3 py-1 text-sm text-muted ring-1 ring-line" aria-live="polite">0 élèves</p>
         </div>
 
 
@@ -154,85 +154,7 @@
                avec createElement, textContent et classList.
                ===================================================== -->
 
-          <!-- Ligne normale -->
-          <li class="rounded-2xl border border-line bg-card p-3" data-id="1">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand">SA</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Sara Alaoui</span>
-                  <span class="block text-sm text-muted">1 absence</span>
-                </span>
-                <span class="font-serif text-xl">13,5 / 20</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Note sur 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Note"
-                         class="h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Ajouter la note</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert" hidden>La note doit être un nombre entre 0 et 20.</p>
-          </li>
-
-          <!-- Ligne sans note + note refusée (message visible) -->
-          <li class="rounded-2xl border border-line bg-card p-3" data-id="2">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand">YM</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Yassine Mansouri</span>
-                  <span class="block text-sm text-muted">0 absence</span>
-                </span>
-                <span class="font-serif text-xl">—</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Note sur 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Note"
-                         class="h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Ajouter la note</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert">La note doit être un nombre entre 0 et 20.</p>
-          </li>
-
-          <!-- Ligne en ALERTE : classe « alerte » + badge visible -->
-          <li class="alerte rounded-2xl border border-line bg-card p-3" data-id="3">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-alert text-sm font-semibold text-white">IB</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Imane Berrada</span>
-                  <span class="block text-sm text-muted">3 absences
-                    <span class="badge ml-1 whitespace-nowrap rounded-full bg-alert px-2 py-0.5 text-xs font-medium text-white">Prévenir les parents</span>
-                  </span>
-                </span>
-                <span class="font-serif text-xl">9 / 20</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line bg-card px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Note sur 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Note"
-                         class="h-11 w-full rounded-full border border-line bg-card px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Ajouter la note</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert" hidden>La note doit être un nombre entre 0 et 20.</p>
-          </li>
+        
         </ul>
 
         <!-- Aucun résultat  -->
@@ -310,8 +232,9 @@
 
 
 
-  <!-- <script src="data.js"></script> -->
-  <!-- <script src="script.js"></script> -->
+<script type="module" src="./js/script.js"></script>
 </body>
 </html>
+
+
 
