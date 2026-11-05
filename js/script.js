@@ -6,6 +6,12 @@ const filtreGroupe = document.getElementById("filtre-groupe");
 const recherche = document.getElementById("recherche");
 const aucunResultat = document.getElementById("aucun-resultat");
 const tri = document.getElementById("tri");
+const bilanMeilleur = document.getElementById("bilan-meilleur");
+const bilanMoyenne = document.getElementById("bilan-moyenne");
+const bilanAbsences = document.getElementById("bilan-absences");
+const bilanAlertes = document.getElementById("bilan-alertes");
+const listeParents = document.getElementById("liste-parents");
+const aucuneAlerte = document.getElementById("aucune-alerte");
 
 groupes.forEach(function (groupe) {
   const option = document.createElement("option");
@@ -22,6 +28,80 @@ function calculerMoyenne(eleve) {
   }, 0);
 
   return total / eleve.notes.length;
+}
+
+function afficherBilan() {
+  const groupeSelectionne = filtreGroupe.value;
+
+  const elevesGroupe = eleves.filter(function (eleve) {
+    return (
+      groupeSelectionne === "" || String(eleve.groupeId) === groupeSelectionne
+    );
+  });
+
+  const elevesAvecNotes = elevesGroupe.filter(function (eleve) {
+    return eleve.notes.length > 0;
+  });
+
+  const totalMoyennes = elevesAvecNotes.reduce(function (total, eleve) {
+    return total + calculerMoyenne(eleve);
+  }, 0);
+
+  const moyenneGroupe =
+    elevesAvecNotes.length > 0 ? totalMoyennes / elevesAvecNotes.length : 0;
+
+  const elevesAvecNotesTries = elevesAvecNotes.slice().sort(function (a, b) {
+    return calculerMoyenne(b) - calculerMoyenne(a);
+  });
+
+  const meilleurEleve = elevesAvecNotesTries[0];
+
+  if (meilleurEleve) {
+    bilanMeilleur.textContent = `${meilleurEleve.prenom} ${meilleurEleve.nom} — ${calculerMoyenne(meilleurEleve).toFixed(1).replace(".", ",")} / 20`;
+  } else {
+    bilanMeilleur.textContent = "Aucune note disponible";
+  }
+
+  const totalAbsences = elevesGroupe.reduce(function (total, eleve) {
+    return total + eleve.absences;
+  }, 0);
+
+  const elevesEnAlerte = elevesGroupe.filter(function (eleve) {
+    return eleve.absences >= 3;
+  });
+
+  const parents = elevesEnAlerte.map(function (eleve) {
+    const parent = document.createElement("li");
+
+    parent.classList.add(
+      "rounded-xl",
+      "bg-card",
+      "px-3",
+      "py-2",
+      "ring-1",
+      "ring-line",
+    );
+
+    parent.textContent = `${eleve.prenom} ${eleve.nom} — ${eleve.telephoneParent}`;
+
+    return parent;
+  });
+
+  const aucuneAlerteGroupe =
+    elevesGroupe.length > 0 &&
+    elevesGroupe.every(function (eleve) {
+      return eleve.absences < 3;
+    });
+
+  bilanMoyenne.textContent = `${moyenneGroupe.toFixed(1).replace(".", ",")} / 20`;
+
+  bilanAbsences.textContent = totalAbsences;
+
+  bilanAlertes.textContent = elevesEnAlerte.length;
+
+  listeParents.replaceChildren(...parents);
+
+  aucuneAlerte.hidden = !aucuneAlerteGroupe;
 }
 
 function creerLigne(eleve) {
@@ -136,6 +216,7 @@ function creerLigne(eleve) {
   avatar.textContent = (
     eleve.prenom.charAt(0) + eleve.nom.charAt(0)
   ).toUpperCase();
+
   nom.textContent = `${eleve.prenom} ${eleve.nom}`;
   details.textContent = `${eleve.absences} absence(s)`;
 
@@ -162,6 +243,7 @@ function creerLigne(eleve) {
       "font-medium",
       "text-white",
     );
+
     badge.textContent = "Prévenir les parents";
 
     details.append(badge);
@@ -255,16 +337,181 @@ listEleves.addEventListener("click", function (event) {
     message.hidden = true;
   }
 
- if (tri.value === "moyenne") {
+  if (tri.value === "moyenne") {
     afficherEleves();
-} else {
+  } else {
     const nouvelleLigne = creerLigne(eleve);
     ligne.replaceWith(nouvelleLigne);
-}
+  }
+
+  afficherBilan();
 });
 
 filtreGroupe.addEventListener("change", afficherEleves);
+filtreGroupe.addEventListener("change", afficherBilan);
 recherche.addEventListener("input", afficherEleves);
 tri.addEventListener("change", afficherEleves);
 
 afficherEleves();
+afficherBilan();
+
+const formEleve = document.getElementById("form-eleve");
+
+const prenom = document.getElementById("prenom");
+const nom = document.getElementById("nom");
+const groupe = document.getElementById("groupe");
+const email = document.getElementById("email");
+const telephone = document.getElementById("telephone");
+const code = document.getElementById("code");
+
+const formSucces = document.getElementById("form-succes");
+const formErreur = document.getElementById("form-erreur");
+
+groupes.forEach(function (groupeItem) {
+  const option = document.createElement("option");
+
+  option.value = groupeItem.id;
+  option.textContent = groupeItem.nom;
+
+  groupe.append(option);
+});
+
+const regexNom = /^[A-Za-zÀ-ÿ\s-]{2,}$/;
+const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const regexTelephone = /^(0[67]\d{8}|\+212[67]\d{8})$/;
+const regexCode = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+function verifierChamp(champ) {
+  const valeur = champ.value.trim();
+  const message = document.getElementById(champ.id + "-msg");
+  const bloc = champ.closest(".champ");
+
+  let valide = false;
+  let texte = "";
+
+  if (champ === prenom || champ === nom) {
+    valide = regexNom.test(valeur);
+    texte = "2 caractères minimum : lettres, espaces ou tirets.";
+  }
+
+  if (champ === email) {
+    valide = regexEmail.test(valeur);
+    texte = "Adresse email invalide.";
+  }
+
+  if (champ === telephone) {
+    valide = regexTelephone.test(valeur);
+    texte = "Numéro marocain invalide.";
+  }
+
+  if (champ === code) {
+    valide = regexCode.test(valeur);
+    texte =
+      "8 caractères minimum, une majuscule, un chiffre et un caractère spécial.";
+  }
+
+  if (champ === groupe) {
+    valide = valeur !== "";
+    texte = "Veuillez choisir un groupe.";
+  }
+
+  if (valide) {
+    bloc.classList.remove("erreur");
+    bloc.classList.add("valide");
+    message.textContent = "Champ valide.";
+  } else {
+    bloc.classList.remove("valide");
+    bloc.classList.add("erreur");
+    message.textContent = texte;
+  }
+
+  return valide;
+}
+
+const champs = [prenom, nom, groupe, email, telephone, code];
+
+champs.forEach(function (champ) {
+  const evenement = champ === groupe ? "change" : "input";
+
+  champ.addEventListener(evenement, function () {
+    verifierChamp(champ);
+    formErreur.hidden = true;
+  });
+});
+
+formEleve.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  formSucces.hidden = true;
+  formErreur.hidden = true;
+
+  const validations = champs.map(function (champ) {
+    return verifierChamp(champ);
+  });
+
+  const formulaireValide = validations.every(function (valide) {
+    return valide;
+  });
+
+  if (!formulaireValide) {
+    const index = validations.indexOf(false);
+    champs[index].focus();
+    return;
+  }
+
+  const doublon = eleves.some(function (eleve) {
+    return (
+      eleve.prenom.toLowerCase() === prenom.value.trim().toLowerCase() &&
+      eleve.nom.toLowerCase() === nom.value.trim().toLowerCase() &&
+      eleve.groupeId === Number(groupe.value)
+    );
+  });
+
+  if (doublon) {
+    formErreur.textContent = "Cet élève existe déjà dans ce groupe.";
+    formErreur.hidden = false;
+    prenom.focus();
+    return;
+  }
+
+  const nombreEleves = eleves.filter(function (eleve) {
+    return eleve.groupeId === Number(groupe.value);
+  }).length;
+
+  if (nombreEleves >= 15) {
+    formErreur.textContent = "Ce groupe est complet (15 élèves).";
+    formErreur.hidden = false;
+    groupe.focus();
+    return;
+  }
+
+  const nouvelEleve = {
+    id:
+      Math.max(
+        ...eleves.map(function (eleve) {
+          return eleve.id;
+        }),
+      ) + 1,
+
+    prenom: prenom.value.trim(),
+    nom: nom.value.trim(),
+    groupeId: Number(groupe.value),
+    emailParent: email.value.trim(),
+    telephoneParent: telephone.value.trim(),
+    absences: 0,
+    notes: [],
+  };
+
+  eleves.push(nouvelEleve);
+
+  afficherEleves();
+  afficherBilan();
+
+  formEleve.reset();
+
+  champs.forEach(function (champ) {
+    champ.closest(".champ").classList.remove("valide", "erreur");
+  });
+
+  formSucces.hidden = false;
+});
